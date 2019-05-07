@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	log "github.com/Sirupsen/logrus"
 	"github.com/urfave/cli"
-	"github.com/xianlubird/mydocker/container"
+	"weidocker/cgroups/systems"
+	"weidocker/container"
 )
 
 var runCommand = cli.Command{
@@ -54,8 +54,8 @@ var initCommand = cli.Command{
 	Name:  "init",
 	Usage: "Init container process run user's process in container. Do not call it outside",
 	Action: func(context *cli.Context) error {
-		log.Infof("init come on")
-		err := container.RunContainerInitProcess(cmd, nil)
+		fmt.Println("init come on")
+		err := container.RunContainerInitProcess()
 		return err
 	},
 }

@@ -1,14 +1,15 @@
 package container
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"syscall"
 )
 
 func NewParentProcess(tty bool) (*exec.Cmd, *os.File) {
-	readPipe, write, err := NewPipe()
-	if errr != nil {
+	readPipe, writePipe, err := NewPipe()
+	if err != nil {
 		fmt.Println("New pipe error %v", err)
 		return nil, nil
 	}

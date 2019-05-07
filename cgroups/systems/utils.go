@@ -22,7 +22,7 @@ func GetCgroupPath(system string, cgPath string, autoCreate bool) (string, error
 	}
 }
 
-func FindCgroupMountpoint(system string) {
+func FindCgroupMountpoint(system string) string {
 	f, err := os.Open("/proc/self/mountinfo")
 	if err != nil {
 		return ""

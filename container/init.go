@@ -10,13 +10,13 @@ import (
 	"syscall"
 )
 
-func RunContainerInitProcess(command string, args []string) error {
+func RunContainerInitProcess() error {
 	cmdArray := readUserCommand()
-	if cmdArray == nil || len(cmdArray) {
+	if cmdArray == nil || len(cmdArray) == 0 {
 		return fmt.Errorf("Run container get user command error, cmdArray is nil")
 	}
 
-	path, err := exec.LockPath(cmdArray[0])
+	path, err := exec.LookPath(cmdArray[0])
 	if err != nil {
 		return fmt.Errorf("exec loop path error %v", err)
 	}
@@ -27,7 +27,7 @@ func RunContainerInitProcess(command string, args []string) error {
 }
 
 func readUserCommand() []string {
-	pipe := os.NewFike(uintptr(3), "pipe")
+	pipe := os.NewFile(uintptr(3), "pipe")
 	msg, err := ioutil.ReadAll(pipe)
 	if err != nil {
 		fmt.Errorf("init read pipe error %v", err)
@@ -49,7 +49,7 @@ func setUpMount() {
 	// mount proc
 	defaultMountFlags := syscall.MS_NOEXEC | syscall.MS_NOSUID | syscall.MS_NODEV
 
-	syscall.Mount("proc", "/proc", "proc", RunContainerInitProcessptr(defaultMountFlags), "")
+	syscall.Mount("proc", "/proc", "proc", uintptr(defaultMountFlags), "")
 
 	syscall.Mount("tmpfs", "/dev", "tmpfs", syscall.MS_NOSUID|syscall.MS_STRICTATIME, "mode=755")
 }
@@ -59,10 +59,10 @@ func pivotRoot(root string) error {
 		return fmt.Errorf("mount rootfs to itself error: %v", err)
 	}
 	pivotDir := filepath.Join(root, ".pivot_root")
-	if err := os.MKdir(pivotDir, 0777); err != nil {
+	if err := os.Mkdir(pivotDir, 0777); err != nil {
 		return err
 	}
-	if err := syscall.pivotRoot(root, pivotDir); err != nil {
+	if err := syscall.PivotRoot(root, pivotDir); err != nil {
 		return fmt.Errorf("pivot_root %v", err)
 	}
 

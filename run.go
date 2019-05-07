@@ -1,23 +1,22 @@
 package main
 
 import (
-	"./cgroups"
-	"./cgroups/systems"
-	"./container"
-	"./systems"
-	log "github.com/Sirupsen/logrus"
+	"fmt"
 	"os"
 	"strings"
+	"weidocker/cgroups"
+	"weidocker/cgroups/systems"
+	"weidocker/container"
 )
 
 func Run(tty bool, comArray []string, res *systems.ResourceConfig) {
 	parent, writePipe := container.NewParentProcess(tty)
 	if parent == nil {
-		fmt.Errorf("new parent process error")
+		fmt.Println("new parent process error")
 		return
 	}
 	if err := parent.Start(); err != nil {
-		fmt.Errorf(err)
+		fmt.Println(err)
 		return
 	}
 

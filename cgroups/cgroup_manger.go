@@ -1,7 +1,8 @@
 package cgroups
 
 import (
-	"../systems"
+	"fmt"
+	"weidocker/cgroups/systems"
 )
 
 type CgroupManger struct {
@@ -24,8 +25,8 @@ func (c *CgroupManger) Apply(pid int) error {
 }
 
 // set cgroup
-func (s *CgroupManger) Set(res *system.ResourceConfig) error {
-	for _, sysIns := range system.SystemsIns {
+func (s *CgroupManger) Set(res *systems.ResourceConfig) error {
+	for _, sysIns := range systems.SystemsIns {
 		sysIns.Set(s.Path, res)
 	}
 	return nil
@@ -35,7 +36,7 @@ func (s *CgroupManger) Set(res *system.ResourceConfig) error {
 func (s *CgroupManger) Destory() error {
 	for _, sysIns := range systems.SystemsIns {
 		if err := sysIns.Remove(s.Path); err != nil {
-			fmt.Errorf("remove cgroup fail %v", err)
+			fmt.Println("remove cgroup fail %v", err)
 			return err
 		}
 	}
